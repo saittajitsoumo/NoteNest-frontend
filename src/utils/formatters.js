@@ -14,7 +14,7 @@ export const formatDate = (dateString, format = 'date') => {
     full: { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' },
     date: { year: 'numeric', month: 'short', day: 'numeric' },
     time: { hour: '2-digit', minute: '2-digit' },
-  };
+  };//nice
   
   return date.toLocaleDateString('en-US', options[format] || options.date);
 };
