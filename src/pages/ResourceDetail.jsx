@@ -1,5 +1,5 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import { Heart, Bookmark, Download, User, Calendar, BookOpen, AlertCircle, Edit as EditIcon, Trash2, ShieldAlert, Navigation, Flag } from 'lucide-react';
 import { Skeleton } from '../components/ui/Skeleton';
@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function ResourceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, user } = useAuth();
   
   // Resource state
@@ -93,6 +94,23 @@ export default function ResourceDetail() {
 
     if (id) fetchComments();
   }, [id]);
+
+  // Scroll to comment if hash is present
+  useEffect(() => {
+    if (!isLoadingComments && comments.length > 0 && location.hash) {
+      setTimeout(() => {
+        const id = location.hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.classList.add('bg-primary/10', 'transition-colors', 'duration-1000');
+          setTimeout(() => {
+            element.classList.remove('bg-primary/10');
+          }, 2000);
+        }
+      }, 500); // Wait for render
+    }
+  }, [isLoadingComments, comments, location.hash]);
 
   const handleLike = async () => {
     if (!isAuthenticated) {
@@ -596,8 +614,10 @@ export default function ResourceDetail() {
                     return (
                       <motion.div 
                         key={comment.id}
+                        id={`comment-${comment.id}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
+                        className="rounded-xl"
                       >
                         <div className="group relative">
                           <div className="flex gap-3">
@@ -654,7 +674,7 @@ export default function ResourceDetail() {
                                 }
                               }
                               return (
-                                <div key={reply.id} className="relative group">
+                                <div key={reply.id} id={`comment-${reply.id}`} className="relative group rounded-xl">
                                   <div className="absolute -left-5 top-4 w-4 h-px bg-border/60"></div>
                                   <div className="flex gap-2">
                                     <div className="flex-shrink-0 w-6 h-6 bg-muted rounded-full flex items-center justify-center mt-1">

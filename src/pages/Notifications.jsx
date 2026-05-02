@@ -6,6 +6,7 @@ import MainLayout from '../layouts/MainLayout';
 import notificationService from '../services/notificationService';
 import { formatTimeAgo, getNotificationIcon } from '../utils/formatters';
 import { useAuth } from '../context/AuthContext';
+import interactionService from '../services/interactionService';
 
 export default function Notifications() {
   const { isAuthenticated } = useAuth();
@@ -68,11 +69,25 @@ export default function Notifications() {
     }
   };
 
-  const handleNavigate = (notification) => {
-    if (notification.link_type === 'resource' && notification.link_id) {
-      navigate(`/resources/${notification.link_id}`);
+  const handleNavigate = async (notification) => {
+    console.log('notif', notification.id, notification.link_type, notification.link_id, notification.target_resource_id, notification.target_comment_id);
+    
+    if (notification.target_resource_id) {
+      navigate(`/resources/${notification.target_resource_id}${notification.target_comment_id ? `#comment-${notification.target_comment_id}` : ''}`);
     } else if (notification.link_type === 'comment' && notification.link_id) {
-      navigate(`/resources/${notification.link_id}#comments`);
+      try {
+        const comment = await interactionService.getComment(notification.link_id);
+        if (comment && comment.resource) {
+          navigate(`/resources/${comment.resource}#comment-${notification.link_id}`);
+        } else {
+          navigate(`/resources/${notification.link_id}#comments`);
+        }
+      } catch (err) {
+        console.error('Failed to fetch comment:', err);
+        navigate(`/resources/${notification.link_id}#comments`);
+      }
+    } else if (notification.link_type === 'resource' && notification.link_id) {
+      navigate(`/resources/${notification.link_id}`);
     }
   };
 
