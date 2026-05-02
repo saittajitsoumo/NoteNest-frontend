@@ -36,7 +36,7 @@ export default function Login() {
     if (verified === 'true') {
       setVerificationMessage({
         type: 'success',
-        text: '✅ Email verified! You can now login.'
+        text: 'Email verified successfully. You can now log in.'
       });
       if (email) {
         setValue('username', email);
