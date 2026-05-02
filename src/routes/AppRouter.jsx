@@ -12,6 +12,7 @@ import Profile from '../pages/Profile';
 import Bookmarks from '../pages/Bookmarks';
 import Notifications from '../pages/Notifications';
 import ForgotPassword from '../pages/ForgotPassword';
+import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 
 // Admin Pages
@@ -51,6 +52,14 @@ const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <ForgotPassword />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: '/reset-password',
+    element: (
+      <PublicRoute>
+        <ResetPassword />
       </PublicRoute>
     ),
   },

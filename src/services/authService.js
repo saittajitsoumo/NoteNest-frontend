@@ -130,7 +130,7 @@ const authService = {
    * Confirm password reset with new password
    * API expects: re_new_password not confirm_password
    */
-  confirmPasswordReset: async (uid, token, newPassword, reNewPassword) => {
+  confirmPasswordReset: async (uid, token, newPassword, confirmPassword) => {
     try {
       const response = await axiosInstance.post(
         '/accounts/password-reset-confirm/',
@@ -138,7 +138,7 @@ const authService = {
           uid,
           token,
           new_password: newPassword,
-          re_new_password: reNewPassword,
+          confirm_password: confirmPassword,
         }
       );
       return response.data;
